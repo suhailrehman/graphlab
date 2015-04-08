@@ -1,5 +1,11 @@
 # GraphLab PowerGraph v2.2
 
+## This version forked for the 15648 - Big Data Systems Studio Project
+Suhail Rehman (suhailr)
+
+## Addition Roadmap
+1. Adding instrumentation for measuring runtime metrics during execution
+
 ## UPDATE: For a signficant evolution of this codebase, see GraphLab Create which is available for download at [dato.com](http://dato.com)
 
 ## History
