@@ -395,6 +395,12 @@ namespace graphlab {
     float start_time;
 
     /**
+     * \brief Time in milliseconds at which the engine started
+     * Added by suhailr
+     */
+    float start_millis;
+
+    /**
      * \brief The timeout time in seconds
      */
     float timeout;
@@ -1253,6 +1259,11 @@ namespace graphlab {
   float synchronous_engine<VertexProgram>::
   elapsed_seconds() const { return timer::approx_time_seconds() - start_time; }
 
+  //suhailr - added millisecond timer
+  template<typename VertexProgram>
+	float synchronous_engine<VertexProgram>::
+	elapsed_millis() const { return timer::approx_time_millis() - start_millis; }
+
   template<typename VertexProgram>
   int synchronous_engine<VertexProgram>::
   iteration() const { return iteration_counter; }
@@ -1279,6 +1290,7 @@ namespace graphlab {
     // Start the timer
     graphlab::timer timer; timer.start();
     start_time = timer::approx_time_seconds();
+
     iteration_counter = 0;
     force_abort = false;
     execution_status::status_enum termination_reason =
@@ -1287,6 +1299,16 @@ namespace graphlab {
     //   // Initialize all vertex programs
     //   run_synchronous( &synchronous_engine::initialize_vertex_programs );
     // }
+
+    //suhailr: Timing Code Init
+    start_millis = timer::approx_time_millis();
+
+    float last_stored=0;
+    std::vector<float> iteration_start_times;
+    std::vector<float> iteration_end_times;
+
+
+
     aggregator.start();
     rmi.barrier();
 
@@ -1308,7 +1330,13 @@ namespace graphlab {
         break;
       }
 
+      iteration_start_times.push_back(elapsed_millis());
+
       bool print_this_round = (elapsed_seconds() - last_print) >= 5;
+
+      //suhailr: TODO:Add Time metrics here
+      float last_stored = elapsed_seconds();
+
 
       if(rmi.procid() == 0 && print_this_round) {
         logstream(LOG_EMPH)
@@ -1415,6 +1443,8 @@ namespace graphlab {
 
       ++iteration_counter;
 
+      iteration_end_times.push_back(elapsed_millis());
+
       if (snapshot_interval > 0 && iteration_counter % snapshot_interval == 0) {
         graph.save_binary(snapshot_path);
       }
@@ -1424,6 +1454,16 @@ namespace graphlab {
       logstream(LOG_EMPH) << iteration_counter
                         << " iterations completed." << std::endl;
     }
+
+    //suhailr: Print out iteration counter
+    logstream(LOG_EMPH)<<"iteration,start_time,end_time"<<std::endl;
+    for(int i=0;i<iteration_counter,i++)
+    {
+    	logstream(LOG_EMPH) << i <<","<< iteration_start_time[i]
+    			<< "," <<iteration_end_time[i];
+    }
+
+
     // Final barrier to ensure that all engines terminate at the same time
     double total_compute_time = 0;
     for (size_t i = 0;i < per_thread_compute_time.size(); ++i) {
