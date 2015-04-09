@@ -222,6 +222,12 @@ int main(int argc, char** argv) {
     clopts.get_engine_args().set_option("sched_allv", true);
   }
 
+
+  //suhailr - Timing function starts for graph loading
+  graphlab::timer timer; timer.start();
+  float start_millis = timer::approx_time_millis();
+
+
   // Build the graph ----------------------------------------------------------
   graph_type graph(dc, clopts);
   if(powerlaw > 0) { // make a synthetic graph
@@ -239,23 +245,48 @@ int main(int argc, char** argv) {
   }
   // must call finalize before querying the graph
   graph.finalize();
+
+
+  //suhailr - Timing function ends for graph loading
+  float load_time = timer::approx_time_millis() - start_millis;
+
+
+
   dc.cout() << "#vertices: " << graph.num_vertices()
             << " #edges:" << graph.num_edges() << std::endl;
 
   // Initialize the vertex data
+
+  //suhailr - Timing function starts for graph initialization
+  start_millis = timer::approx_time_millis();
+
   graph.transform_vertices(init_vertex);
+
+  //suhailr - Timing function ends for graph loading
+  float init_time = timer::approx_time_millis() - start_millis;
+
+
+  //suhailr - Timing function starts for pagerank
+  start_millis = timer::approx_time_millis();
 
   // Running The Engine -------------------------------------------------------
   graphlab::omni_engine<pagerank> engine(dc, graph, exec_type, clopts);
   engine.signal_all();
   engine.start();
   const double runtime = engine.elapsed_seconds();
+
+  //suhailr - Timing function ends for pagerank
+  float pagerank_time = timer::approx_time_millis() - start_millis;
+
   dc.cout() << "Finished Running engine in " << runtime
             << " seconds." << std::endl;
 
 
   const double total_rank = graph.map_reduce_vertices<double>(map_rank);
   std::cout << "Total rank: " << total_rank << std::endl;
+
+  //suhailr - Timing function starts for save
+  start_millis = timer::approx_time_millis();
 
   // Save the final graph -----------------------------------------------------
   if (saveprefix != "") {
@@ -265,8 +296,16 @@ int main(int argc, char** argv) {
                false);   // do not save edges
   }
 
+  //suhailr - Timing function ends for save
+  float save_time = timer::approx_time_millis() - start_millis;
+
   double totalpr = graph.map_reduce_vertices<double>(pagerank_sum);
   std::cout << "Totalpr = " << totalpr << "\n";
+
+  dc.cout() <<"load,init,pagerank,save"<<std::endl;
+  dc.cout() <<load_time<<","<<init_time<<","<<pagerank_time<<","<<save_time
+		  <<std::endl;
+
 
   // Tear-down communication layer and quit -----------------------------------
   graphlab::mpi_tools::finalize();

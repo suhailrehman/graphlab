@@ -666,6 +666,9 @@ namespace graphlab {
     // documentation inherited from iengine
     float elapsed_seconds() const;
 
+    //suhailr- added millisecond timer
+    float elapsed_millis() const;
+
     /**
      * \brief Get the current iteration number since start was last
      * invoked.
@@ -1457,10 +1460,10 @@ namespace graphlab {
 
     //suhailr: Print out iteration counter
     logstream(LOG_EMPH)<<"iteration,start_time,end_time"<<std::endl;
-    for(int i=0;i<iteration_counter,i++)
+    for(int i=0;i<iteration_counter;i++)
     {
-    	logstream(LOG_EMPH) << i <<","<< iteration_start_time[i]
-    			<< "," <<iteration_end_time[i];
+    	logstream(LOG_EMPH) << i <<","<< iteration_start_times[i]
+    			<< "," <<iteration_end_times[i];
     }
 
 
