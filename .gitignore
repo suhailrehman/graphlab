@@ -25,3 +25,5 @@ tags
 *swp
 \.mchg\.mchg
 .ycm_extra_conf*
+
+scripts/ec2/machines

@@ -41,7 +41,7 @@ ALS=1         # if 1, runs als
 # clean old running instances, if any
 echo "y" | ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2  destroy hpctest  
 # launch ec2 cc2.8xlarge image
-./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -a hpc -s $MAX_SLAVES -t cc2.8xlarge launch hpctest  
+./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -a hpc -s $MAX_SLAVES -t m3.xlarge --spot-price=0.2 launch hpctest  
 # update the GraphLab version to be the latest, recompile, and update slaves
 ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 update hpctest 
 
