@@ -1309,7 +1309,12 @@ namespace graphlab {
     float last_stored=0;
     std::vector<float> iteration_start_times;
     std::vector<float> iteration_end_times;
-
+    std::vector<float> gather_start_times;
+    std::vector<float> gather_end_times;
+    std::vector<float> apply_start_times;
+    std::vector<float> apply_end_times;
+    std::vector<float> scatter_start_times;
+    std::vector<float> scatter_end_times;
 
 
     aggregator.start();
@@ -1403,6 +1408,11 @@ namespace graphlab {
       // Execute the gather operation for all vertices that are active
       // in this minor-step (active-minorstep bit set).
       // if (rmi.procid() == 0) std::cout << "Gathering..." << std::endl;
+
+      gather_start_times.push_back(elapsed_millis());
+
+
+
       run_synchronous( &synchronous_engine::execute_gathers );
       // Clear the minor step bit since only super-step vertices
       // (only master vertices are required to participate in the
@@ -1415,6 +1425,10 @@ namespace graphlab {
        *      cache)
        *   2) No minor-step bits are set
        */
+
+      gather_end_times.push_back(elapsed_millis());
+
+      apply_start_times.push_back(elapsed_millis());
 
       // Execute Apply Operations -------------------------------------------
       // Run the apply function on all active vertices
@@ -1431,10 +1445,16 @@ namespace graphlab {
        *      synchronized with the mirrors.
        */
 
+      apply_end_times.push_back(elapsed_millis());
 
+
+      scatter_start_times.push_back(elapsed_millis());
       // Execute Scatter Operations -----------------------------------------
       // Execute each of the scatters on all minor-step active vertices.
       run_synchronous( &synchronous_engine::execute_scatters );
+
+      scatter_end_times.push_back(elapsed_millis());
+
       /**
        * Post conditions:
        *   1) NONE
