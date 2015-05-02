@@ -1483,6 +1483,12 @@ namespace graphlab {
     for(int i=0;i<iteration_counter;i++)
     {
     	logstream(LOG_EMPH) << i <<","<< iteration_start_times[i]
+	            << "," <<gather_start_times[i]
+				<< "," <<gather_end_times[i]
+				<< "," <<apply_start_times[i]
+				<< "," <<apply_end_times[i]
+				<< "," <<scatter_start_times[i]
+				<< "," <<scatter_end_times[i]
     			<< "," <<iteration_end_times[i];
     }
 
