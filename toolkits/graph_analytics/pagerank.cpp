@@ -224,8 +224,9 @@ int main(int argc, char** argv) {
 
 
   //suhailr - Timing function starts for graph loading
-  graphlab::timer timer; timer.start();
-  float start_millis = timer::approx_time_millis();
+  graphlab::timer timer;
+  timer.start();
+  float start_millis = timer.approx_time_millis();
 
 
   // Build the graph ----------------------------------------------------------
@@ -248,7 +249,7 @@ int main(int argc, char** argv) {
 
 
   //suhailr - Timing function ends for graph loading
-  float load_time = timer::approx_time_millis() - start_millis;
+  float load_time = timer.approx_time_millis() - start_millis;
 
 
 
@@ -258,16 +259,16 @@ int main(int argc, char** argv) {
   // Initialize the vertex data
 
   //suhailr - Timing function starts for graph initialization
-  start_millis = timer::approx_time_millis();
+  start_millis = timer.approx_time_millis();
 
   graph.transform_vertices(init_vertex);
 
   //suhailr - Timing function ends for graph loading
-  float init_time = timer::approx_time_millis() - start_millis;
+  float init_time = timer.approx_time_millis() - start_millis;
 
 
   //suhailr - Timing function starts for pagerank
-  start_millis = timer::approx_time_millis();
+  start_millis = timer.approx_time_millis();
 
   // Running The Engine -------------------------------------------------------
   graphlab::omni_engine<pagerank> engine(dc, graph, exec_type, clopts);
@@ -276,7 +277,7 @@ int main(int argc, char** argv) {
   const double runtime = engine.elapsed_seconds();
 
   //suhailr - Timing function ends for pagerank
-  float pagerank_time = timer::approx_time_millis() - start_millis;
+  float pagerank_time = timer.approx_time_millis() - start_millis;
 
   dc.cout() << "Finished Running engine in " << runtime
             << " seconds." << std::endl;
@@ -286,7 +287,7 @@ int main(int argc, char** argv) {
   std::cout << "Total rank: " << total_rank << std::endl;
 
   //suhailr - Timing function starts for save
-  start_millis = timer::approx_time_millis();
+  start_millis = timer.approx_time_millis();
 
   // Save the final graph -----------------------------------------------------
   if (saveprefix != "") {
@@ -297,7 +298,7 @@ int main(int argc, char** argv) {
   }
 
   //suhailr - Timing function ends for save
-  float save_time = timer::approx_time_millis() - start_millis;
+  float save_time = timer.approx_time_millis() - start_millis;
 
   double totalpr = graph.map_reduce_vertices<double>(pagerank_sum);
   std::cout << "Totalpr = " << totalpr << "\n";
