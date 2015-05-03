@@ -26,11 +26,11 @@
 ############################################################################
 # CONFIGURATION
 ############################################################################
-MAX_SLAVES=3  # configure the maximum number of slaves
-MAX_RETRY=3   # configure the number of experiemnt repeats
+MAX_SLAVES=1  # configure the maximum number of slaves
+MAX_RETRY=1   # configure the number of experiemnt repeats
 PAGERANK=1    # if 1, runs pagerank
-SVD=1         # if 1, runs svd
-ALS=1         # if 1, runs als
+SVD=0         # if 1, runs svd
+ALS=0         # if 1, runs als
 
 #It is recommended to define the below two variables for easier setup
 #uncomment the below two lines once you set them up
@@ -38,10 +38,15 @@ ALS=1         # if 1, runs als
 #export AWS_SECRET_ACCESS_KEY=[ Your access key secret ]
 ######################################################################
 
+AMI_ID="ami-30c2ca58"
+REGION="us-east-1"
+TYPE="r3.large"
+
+
 # clean old running instances, if any
 echo "y" | ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2  destroy hpctest  
 # launch ec2 cc2.8xlarge image
-./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -a hpc -s $MAX_SLAVES -t m3.xlarge --spot-price=0.2 launch hpctest  
+./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -a $AMI_ID -s $MAX_SLAVES -t $TYPE -r $REGION --spot-price=0.2 launch hpctest  
 # update the GraphLab version to be the latest, recompile, and update slaves
 ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 update hpctest 
 
