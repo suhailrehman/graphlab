@@ -1306,7 +1306,7 @@ namespace graphlab {
     //suhailr: Timing Code Init
     start_millis = timer::approx_time_millis();
 
-    float last_stored=0;
+    //float last_stored=0;
     std::vector<float> iteration_start_times;
     std::vector<float> iteration_end_times;
     std::vector<float> gather_start_times;
@@ -1343,7 +1343,7 @@ namespace graphlab {
       bool print_this_round = (elapsed_seconds() - last_print) >= 5;
 
       //suhailr: TODO:Add Time metrics here
-      float last_stored = elapsed_seconds();
+      //float last_stored = elapsed_seconds();
 
 
       if(rmi.procid() == 0 && print_this_round) {
@@ -1489,7 +1489,9 @@ namespace graphlab {
 				<< "," <<apply_end_times[i]
 				<< "," <<scatter_start_times[i]
 				<< "," <<scatter_end_times[i]
-    			<< "," <<iteration_end_times[i];
+    			<< "," <<iteration_end_times[i]<<std::endl;
+
+
     }
 
 
