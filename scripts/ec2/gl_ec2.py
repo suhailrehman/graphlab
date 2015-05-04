@@ -36,7 +36,7 @@ from boto.ec2.blockdevicemapping import BlockDeviceMapping, EBSBlockDeviceType
 STD_AMI_URL = "https://s3.amazonaws.com/GraphLabGit/graphlab2-std"
 HVM_AMI_URL = "https://s3.amazonaws.com/GraphLabGit/graphlab2-hvm"
 
-compilation_threads = 4
+compilation_threads = 2 
 
 # Configure and parse our command-line arguments
 def parse_args():

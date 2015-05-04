@@ -41,14 +41,14 @@ ALS=0         # if 1, runs als
 AMI_ID="ami-30c2ca58"
 REGION="us-east-1"
 TYPE="r3.large"
-
+PEM_FILE="suhailr-bdss"
 
 # clean old running instances, if any
-echo "y" | ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2  destroy hpctest  
+#echo "y" | ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE  destroy hpctest 
 # launch ec2 cc2.8xlarge image
-./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -a $AMI_ID -s $MAX_SLAVES -t $TYPE -r $REGION --spot-price=0.2 launch hpctest  
+#./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -a $AMI_ID -s $MAX_SLAVES -t $TYPE -r $REGION --spot-price=0.4 launch hpctest  
 # update the GraphLab version to be the latest, recompile, and update slaves
-./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 update hpctest 
+./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -r $REGION update hpctest 
 
 # run pagerank benchmarks
 if [ $PAGERANK -eq 1 ]; then
@@ -57,7 +57,7 @@ do
   echo "Running Pagerank"
   for j in `seq 0 1 $MAX_RETRY`
   do
-        ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2 -s $i pagerank_demo hpctest  
+        ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -s $i  -r $REGION pagerank_demo hpctest  
   done
 done
 fi
@@ -89,4 +89,4 @@ done
 fi
 
 # clean everything
-echo "y" | ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2  destroy hpctest  
+#echo "y" | ./gl-ec2 -i ~/.ssh/amazonec2.pem -k amazonec2  destroy hpctest  

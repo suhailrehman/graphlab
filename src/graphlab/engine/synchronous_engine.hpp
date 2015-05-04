@@ -1476,24 +1476,29 @@ namespace graphlab {
     if (rmi.procid() == 0) {
       logstream(LOG_EMPH) << iteration_counter
                         << " iterations completed." << std::endl;
+
+      	  //suhailr: Print out iteration counter
+
+		logstream(LOG_EMPH)<<"iteration,start_time,"
+				<<"gather_start,gather_end"
+				<<"apply_start,apply_end"
+				<<"scatter_start,scatter_end"
+				<<"end_time"<<std::endl;
+
+		for(int i=0;i<iteration_counter;i++)
+		{
+			logstream(LOG_EMPH) << i <<","<< iteration_start_times[i]
+					<< "," <<gather_start_times[i]
+					<< "," <<gather_end_times[i]
+					<< "," <<apply_start_times[i]
+					<< "," <<apply_end_times[i]
+					<< "," <<scatter_start_times[i]
+					<< "," <<scatter_end_times[i]
+					<< "," <<iteration_end_times[i]<<std::endl;
+
+
+		}
     }
-
-    //suhailr: Print out iteration counter
-    logstream(LOG_EMPH)<<"iteration,start_time,end_time"<<std::endl;
-    for(int i=0;i<iteration_counter;i++)
-    {
-    	logstream(LOG_EMPH) << i <<","<< iteration_start_times[i]
-	            << "," <<gather_start_times[i]
-				<< "," <<gather_end_times[i]
-				<< "," <<apply_start_times[i]
-				<< "," <<apply_end_times[i]
-				<< "," <<scatter_start_times[i]
-				<< "," <<scatter_end_times[i]
-    			<< "," <<iteration_end_times[i]<<std::endl;
-
-
-    }
-
 
     // Final barrier to ensure that all engines terminate at the same time
     double total_compute_time = 0;
