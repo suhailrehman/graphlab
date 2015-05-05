@@ -57,7 +57,7 @@ do
   echo "Running Pagerank"
   for j in `seq 0 1 $MAX_RETRY`
   do
-        ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -s $i  -r $REGION pagerank_demo hpctest  
+ #       ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -s $i  -r $REGION pagerank_demo hpctest  
   done
 done
 fi
