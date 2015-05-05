@@ -26,7 +26,7 @@
 ############################################################################
 # CONFIGURATION
 ############################################################################
-MAX_SLAVES=1  # configure the maximum number of slaves
+MAX_SLAVES=10  # configure the maximum number of slaves
 MAX_RETRY=1   # configure the number of experiemnt repeats
 PAGERANK=1    # if 1, runs pagerank
 SVD=0         # if 1, runs svd
@@ -38,17 +38,21 @@ ALS=0         # if 1, runs als
 #export AWS_SECRET_ACCESS_KEY=[ Your access key secret ]
 ######################################################################
 
-AMI_ID="ami-30c2ca58"
+AMI_ID="ami-f2d2d99a"
 REGION="us-east-1"
 TYPE="r3.large"
 PEM_FILE="suhailr-bdss"
+CLUSTER_NAME="hpctest2"
 
 # clean old running instances, if any
 #echo "y" | ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE  destroy hpctest 
 # launch ec2 cc2.8xlarge image
-#./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -a $AMI_ID -s $MAX_SLAVES -t $TYPE -r $REGION --spot-price=0.4 launch hpctest  
+./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -a $AMI_ID -s $MAX_SLAVES -t $TYPE -r $REGION --spot-price=0.4 launch $CLUSTER_NAME  
 # update the GraphLab version to be the latest, recompile, and update slaves
-./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -r $REGION update hpctest 
+./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -r $REGION update $CLUSTERNAME
+
+#Setup Hadoop
+./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -r $REGION start-hadoop $CLUSTERNAME
 
 # run pagerank benchmarks
 if [ $PAGERANK -eq 1 ]; then
@@ -57,7 +61,7 @@ do
   echo "Running Pagerank"
   for j in `seq 0 1 $MAX_RETRY`
   do
- #       ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -s $i  -r $REGION pagerank_demo hpctest  
+ #       ./gl-ec2 -i ~/.ssh/"$PEM_FILE".pem -k $PEM_FILE -s $i  -r $REGION pagerank_demo $CLUSTERNAME  
   done
 done
 fi
